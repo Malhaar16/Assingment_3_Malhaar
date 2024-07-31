@@ -1,12 +1,13 @@
 require("dotenv").config();
-const PORT = process.env.PORT || 3000;
 const express = require("express");
 const app = express();
 const path = require("path");
 const upload_router = require("./router/upload_router");
 const fetch_router = require("./router/fetch_router");
 const mongoose = require("mongoose");
-mongoose.connect(process.env.MONGODB_URI);
+
+mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+
 let db = mongoose.connection;
 db.once("open", () => {
   console.log("Connected to MongoDB");
@@ -14,6 +15,7 @@ db.once("open", () => {
 db.on("error", (err) => {
   console.error("DB Error:" + err);
 });
+
 // Middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -49,6 +51,7 @@ app.use((req, res) => {
 });
 
 // Start the server
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`http://localhost:${PORT}`);
 });
